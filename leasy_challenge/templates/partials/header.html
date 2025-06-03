@@ -1,0 +1,7 @@
+<header>
+    <h3>Bienvenido, {{ request.user.first_name }}.</h3>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger">Cerrar sesión</button>
+    </form>
+</header>

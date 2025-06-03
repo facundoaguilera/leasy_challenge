@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Ventas{% endblock %}
+{% block content %}
+<h2>Dashboard de Ventas</h2>
+{% include "partials/header.html" %}
+<a href="{% url 'crear-cliente' %}" class="btn btn-success mb-3">+ Nuevo Cliente</a>
+<table class="table">
+  <thead>
+    <tr><th>Nombre</th><th>Documento</th></tr>
+  </thead>
+  <tbody>
+    {% for client in object_list %}
+    <tr>
+      <td>{{ client.first_name }} {{ client.last_name }}</td>
+      <td>{{ client.document_number }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% include "partials/navbar.html"  %}
+{% endblock %}
