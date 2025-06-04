@@ -37,5 +37,5 @@ class InvoiceListView(RoleRequiredMixin, ListView):
     required_role = 'cobranzas'
 
     def get_queryset(self):
-        return Invoice.objects.select_related('contract__client')
+        return Invoice.objects.select_related('contract__client').order_by('due_date')
 
