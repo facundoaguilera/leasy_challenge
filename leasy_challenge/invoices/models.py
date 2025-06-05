@@ -7,13 +7,14 @@ class Invoice(models.Model):
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE, related_name= 'invoice')
     issue_date = models.DateField(null=True)
     period_start = models.DateField(null=True)
-    due_date = models.DateField()
+    due_date = models.DateField(db_index = True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     paid = models.BooleanField(default=False)
     
     created_at = models.DateField(auto_now_add=True)
 
     class Meta:
+        ordering = ['due_date']
         unique_together = ['contract', 'created_at', 'due_date']
 
     def __str__(self):

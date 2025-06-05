@@ -34,13 +34,16 @@ class DashboardView(LoginRequiredMixin, View):
                  
     def post(self, request):
         file = request.FILES.get("file")
-        if not file or not file.name.endswith(".csv") or file.size > 5 * 1024 * 1024:
+        if not file:
+            return render(request, self.template_name, {"error": "Debes subir un archivo."})
+        
+        if file.size > 5 * 1024 * 1024:
             return render(request, self.template_name, {"error": "Archivo inválido o demasiado grande."})
+        try: 
+                nuevos, duplicados = DashboardService.process_file(file)
+                messages.success(request, f"{nuevos} clientes cargados. {duplicados} ya existían.")
+                return redirect("default-dashboard")
 
-        try:
-            nuevos, duplicados = DashboardService.process_csv(file)
-            messages.success(request, f"{nuevos} clientes cargados. {duplicados} ya existían.")
-            return redirect("default-dashboard")
         except Exception as e:
             return render(request, self.template_name, {"error": str(e)})
         
