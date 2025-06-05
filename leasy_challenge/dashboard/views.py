@@ -37,8 +37,8 @@ class DashboardView(LoginRequiredMixin, View):
         if not file:
             return render(request, self.template_name, {"error": "Debes subir un archivo."})
         
-        if file.size > 5 * 1024 * 1024:
-            return render(request, self.template_name, {"error": "Archivo inválido o demasiado grande."})
+        # if file.size > 5 * 1024 * 1024:
+        #     return render(request, self.template_name, {"error": "Archivo inválido o demasiado grande."})
         try: 
                 nuevos, duplicados = DashboardService.process_file(file)
                 messages.success(request, f"{nuevos} clientes cargados. {duplicados} ya existían.")
