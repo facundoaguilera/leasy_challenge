@@ -20,7 +20,7 @@ class VentasDashboardView(RoleRequiredMixin, ListView):
         queryset=Contract.objects.filter(active=True).select_related('vehicle'),
         to_attr='active_contracts'
         )
-        return Client.objects.all().prefetch_related(active_contracts).order_by("last_name", "first_name")
+        return Client.objects.prefetch_related(active_contracts).order_by("last_name", "first_name")
 
 class ClientCreateView(RoleRequiredMixin, CreateView):
     model = Client
