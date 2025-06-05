@@ -1,8 +1,6 @@
 from contracts.models import Contract
-from django.db.models import Q, Sum, Count, Min, F, ExpressionWrapper
-from django.db.models.functions import Now
-from django.db.models import DurationField
-from datetime import date
+from django.db.models import Q, Sum, Count, Min
+
 
 class ContractRepository:
     def get_active_contracts_with_annotations():

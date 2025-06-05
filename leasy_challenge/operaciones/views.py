@@ -12,6 +12,7 @@ from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 from operaciones.repositories.vehicle_repository import VehicleRepository
 from operaciones.services.vehicle_status_service import VehicleStatusService
+from django.db import connection
 
 class OperacionesDashboardView(RoleRequiredMixin, ListView):
     model = Vehicle
@@ -21,8 +22,11 @@ class OperacionesDashboardView(RoleRequiredMixin, ListView):
 
     def get_queryset(self):
         vehicles = VehicleRepository.get_vehicles_with_contracts()
+        response = VehicleStatusService.annotate_vehicle_status(vehicles)
         return VehicleStatusService.annotate_vehicle_status(vehicles)
-       
+        # print(len(connection.queries))
+        # return response
+    
 class VehicleCreateView(RoleRequiredMixin, CreateView):
     model = Vehicle
     fields = ['brand', 'model', 'plate', 'vin']
