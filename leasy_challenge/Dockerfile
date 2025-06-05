@@ -16,7 +16,7 @@ COPY . .
 COPY cronjob /etc/cron.d/generate_invoices
 RUN chmod +x /app/run_generate_invoices.sh && crontab /etc/cron.d/generate_invoices
 
-# Asegurate de que el archivo de log exista
+
 RUN touch /var/log/cron.log
 
 # Comando para ejecutar cron en primer plano (necesario para contenedor Docker)
