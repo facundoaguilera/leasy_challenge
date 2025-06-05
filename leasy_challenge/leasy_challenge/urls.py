@@ -24,7 +24,7 @@ urlpatterns = [
     path('', CustomLoginView.as_view(), name='login'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
     path("dashboard/", include("dashboard.urls")), 
-    path("contratos/", include("contracts.urls")),
+    #path("contratos/", include("contracts.urls")),
     path("ventas/", include("ventas.urls")),
     path("operaciones/", include("operaciones.urls")),
     path("cobranzas/", include("cobranzas.urls")),

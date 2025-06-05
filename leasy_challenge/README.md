@@ -21,7 +21,9 @@ DATABASE_URL=postgres://leasyuser:leasypass@db:5432/leasydb
 bash
 docker compose up –build
 Esto crea migraciones, un cronjob para generar invoices automaticos y usuarios de prueba.
-Los usuarios de prueba son ventas_user@test,  operaciones_user@test, cobranzas_user@test
+Los usuarios de prueba son ventas_user@leasy.test,  operaciones_user@leasy.test, cobranzas_user@leasy.test
+password: leasy1234 y un usuario que tiene acceso a todos los grupos que es admin@test.com con password: admin123
+
 Ejecución
 Web App
 •	Accede desde: http://localhost:8000
