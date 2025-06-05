@@ -7,7 +7,7 @@ Requerimientos
 •	Redis 7
 Instalación
 1.	Clonar el repositorio (en bash):
-git clone https://github.com/facundoaguilera/leasy_challenge.git
+git clone https://github.com/tuusuario/leasy_challenge.git
 cd leasy_challenge
 2.	Configurar variables de entorno:
 Crear un archivo .env con las siguientes variables:

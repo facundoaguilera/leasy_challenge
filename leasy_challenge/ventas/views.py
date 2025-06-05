@@ -3,10 +3,11 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.generic import CreateView, ListView, UpdateView, ListView
 from clients.models import Client
+from contracts.models import Contract
 from users.mixins import RoleRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
-
+from django.db.models import Prefetch
 class VentasDashboardView(RoleRequiredMixin, ListView):
     model = Client
     template_name = "ventas/dashboard.html"
@@ -14,7 +15,12 @@ class VentasDashboardView(RoleRequiredMixin, ListView):
     required_role = 'ventas'
 
     def get_queryset(self):
-        return Client.objects.all().order_by("last_name", "first_name")
+        active_contracts = Prefetch(
+        'contracts',
+        queryset=Contract.objects.filter(active=True).select_related('vehicle'),
+        to_attr='active_contracts'
+        )
+        return Client.objects.all().prefetch_related(active_contracts).order_by("last_name", "first_name")
 
 class ClientCreateView(RoleRequiredMixin, CreateView):
     model = Client

@@ -5,9 +5,8 @@ from contracts.forms import ContractForm
 from users.mixins import RoleRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.db.models import Count, Sum, Min, Q, F, ExpressionWrapper, IntegerField
-from django.db.models.functions import Now, ExtractDay
-from datetime import date
+
+from cobranzas.services.contract_service import ContractService
 
 class CobranzasDashboardView(RoleRequiredMixin, ListView):
     model = Contract
@@ -17,31 +16,8 @@ class CobranzasDashboardView(RoleRequiredMixin, ListView):
     context_object_name = "contracts"
 
     def get_queryset(self):
-        return (
-            Contract.objects.filter(active=True)
-            .select_related("client", "vehicle")  # para evitar consultas extra por cliente y vehículo
-            .prefetch_related("invoice")        # para cargar todas las invoices del contrato
-            .annotate(
-                cuotas_pendientes=Count("invoice", filter=Q(invoice__paid=False)),
-                monto_pendiente=Sum("invoice__amount", filter=Q(invoice__paid=False)),
-                fecha_mas_antigua=Min("invoice__due_date", filter=Q(invoice__paid=False)),
-                    )
-           
-            )
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        for contract in context['contracts']:
-            
-            if contract.fecha_mas_antigua:
-                if date.today()>contract.fecha_mas_antigua:
-                    delta = date.today() - contract.fecha_mas_antigua
-                    contract.dias_desde_mas_antigua = delta.days
-                else:  contract.dias_desde_mas_antigua = 0
-                # print("today",date.today() , "-", contract.fecha_mas_antigua)
-                # print("dias desde mas antigua",delta.days )
-            else:
-                contract.dias_desde_mas_antigua = 0
-        return context  
+        return ContractService.get_contracts_with_extra_data()
+    
 
 class ContractCreateView(RoleRequiredMixin, CreateView):
     model = Contract
@@ -61,5 +37,5 @@ class InvoiceListView(RoleRequiredMixin, ListView):
     required_role = 'cobranzas'
 
     def get_queryset(self):
-        return Invoice.objects.select_related('contract__client')
+        return Invoice.objects.select_related('contract__client').order_by('due_date')
 

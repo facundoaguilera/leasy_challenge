@@ -10,6 +10,9 @@ from django.contrib import messages
 from django.utils.timezone import now
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
+from operaciones.repositories.vehicle_repository import VehicleRepository
+from operaciones.services.vehicle_status_service import VehicleStatusService
+from django.db import connection
 
 class OperacionesDashboardView(RoleRequiredMixin, ListView):
     model = Vehicle
@@ -18,33 +21,12 @@ class OperacionesDashboardView(RoleRequiredMixin, ListView):
     required_role = 'operaciones'
 
     def get_queryset(self):
-        vehicles = Vehicle.objects.prefetch_related("contracts")
-        today = now().date()
-
-        for v in vehicles:
-            contratos = sorted(v.contracts.all(), key=lambda c: c.start_date, reverse=True)
-            v.tiene_contrato_activo = any(c.active for c in contratos)
-
-            v.ultima_fecha_fin = None
-            v.dias_desde_ultimo = None
-
-            if not v.tiene_contrato_activo and contratos:
-                ultimo = contratos[0]
-                # Calcular fecha fin estimada según ciclo
-                if ultimo.billing_cycle == "weekly":
-                    fecha_fin = ultimo.start_date + timedelta(weeks=1)
-                elif ultimo.billing_cycle == "biweekly":
-                    fecha_fin = ultimo.start_date + timedelta(weeks=2)
-                elif ultimo.billing_cycle == "monthly":
-                    fecha_fin = ultimo.start_date + relativedelta(months=1)
-                else:
-                    fecha_fin = None
-
-                v.ultima_fecha_fin = fecha_fin
-                if fecha_fin:
-                    v.dias_desde_ultimo = (today - fecha_fin).days
-
-        return vehicles
+        vehicles = VehicleRepository.get_vehicles_with_contracts()
+        response = VehicleStatusService.annotate_vehicle_status(vehicles)
+        return VehicleStatusService.annotate_vehicle_status(vehicles)
+        # print(len(connection.queries))
+        # return response
+    
 class VehicleCreateView(RoleRequiredMixin, CreateView):
     model = Vehicle
     fields = ['brand', 'model', 'plate', 'vin']

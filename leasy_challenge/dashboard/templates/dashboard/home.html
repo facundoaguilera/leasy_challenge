@@ -11,7 +11,7 @@
 {% comment %} <h2>Bienvenido, {{ request.user.first_name }}</h2>
 <a href="{% url 'logout' %}" class="btn btn-outline-danger mb-3">Cerrar sesión</a> {% endcomment %}
 
-<h4>Subir archivo (.csv)</h4>
+<h4>Subir archivo (.csv) o (.xlsx)</h4>
 <form method="post" enctype="multipart/form-data">
 
   {% csrf_token %}
