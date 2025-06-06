@@ -155,3 +155,4 @@ RQ_QUEUES = {
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Comprimir y cachear archivos estáticos
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+LOGIN_URL = 'login'
