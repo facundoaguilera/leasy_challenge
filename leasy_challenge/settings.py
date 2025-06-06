@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+import redis
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -141,9 +142,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
+# RQ_QUEUES = {
+#     'default': {
+#         'URL': os.getenv("REDIS_URL", "redis://localhost:6379"),
+#     }
+# }
 RQ_QUEUES = {
     'default': {
-        'URL': os.getenv("REDIS_URL", "redis://localhost:6379"),
+        'USE_REDIS_CACHE': 'default',
+        'URL': os.getenv('REDIS_URL', 'redis://localhost:6379'),
     }
 }
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
