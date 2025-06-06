@@ -22,7 +22,7 @@ bash
 docker compose up –build
 Esto crea migraciones, un cronjob para generar invoices automaticos y usuarios de prueba.
 Los usuarios de prueba son ventas_user@leasy.test,  operaciones_user@leasy.test, cobranzas_user@leasy.test
-password: leasy1234 y un usuario que tiene acceso a todos los grupos que es admin@leasy.test con password: admin123
+password: leasy1234 y un usuario que tiene acceso a todos los grupos que es admin@test.com con password: admin123
 
 Ejecución
 Web App
