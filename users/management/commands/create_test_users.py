@@ -6,12 +6,14 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         roles = ['ventas', 'operaciones', 'cobranzas']
         admin_email = "admin@leasy.test"
-        if not CustomUser.objects.filter(email= admin_email).exists():
-            admin_user = CustomUser.objects.create_user(
-                    email=admin_email,
-                    password='admin123',
-                    first_name="Admin"
-                )
+        admin_user, created = CustomUser.objects.get_or_create(
+            email=admin_email,
+            defaults={
+                "password": 'admin123',
+                "first_name": "Admin"
+            }
+        )
+        if created:
             self.stdout.write(self.style.SUCCESS(f'Usuario {admin_email} creado'))
         for role in roles:
             group, _ = Group.objects.get_or_create(name=role)
