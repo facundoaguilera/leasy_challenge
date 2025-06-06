@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import dj_database_url
 import redis
+import urllib.parse as urlparse
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -141,16 +142,14 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.CustomUser'
+redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+# Agrega ?ssl_cert_reqs=none si es rediss://
+if redis_url.startswith("rediss://") and "ssl_cert_reqs" not in redis_url:
+    redis_url += "?ssl_cert_reqs=none"
 
-# RQ_QUEUES = {
-#     'default': {
-#         'URL': os.getenv("REDIS_URL", "redis://localhost:6379"),
-#     }
-# }
 RQ_QUEUES = {
     'default': {
-        'USE_REDIS_CACHE': 'default',
-        'URL': os.getenv('REDIS_URL', 'redis://localhost:6379'),
+        'URL': redis_url,
     }
 }
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
