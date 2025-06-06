@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Facturas{% endblock %}
+{% block content %}
+
+<h2>Facturas generadas</h2>
+<a href="{% url 'default-dashboard' %}" class="btn btn-outline-info mb-3">Inicio</a>
+<a href="{% url 'cobranzas-dashboard' %}" class="btn btn-outline-info mb-3">Cobranzas</a>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Cliente</th>
+      <th>Contrato</th>
+      <th>Monto</th>
+      <th>Emitida</th>
+      <th>Vencimiento</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for factura in object_list %}
+    <tr>
+      <td>{{ factura.contract.client }}</td>
+      <td>#{{ factura.contract.id }}</td>
+      <td>${{ factura.amount }}</td>
+      <td>{{ factura.issue_date }}</td>
+      <td>{{ factura.due_date }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">No hay facturas generadas.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

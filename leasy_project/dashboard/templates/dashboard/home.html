@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load extras %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% include "partials/header.html" %}
+<a href="{% url 'crear-contrato' %}" class="btn btn-success mb-3">+ Nuevo Contrato</a>
+<a href="{% url 'reporte-clientes' %}" class="btn btn-outline-info mb-4">Generar Reporte</a>
+<a href="{% url 'ventas-dashboard' %}" class="btn btn-outline-info mb-4">Ventas</a>
+<a href="{% url 'operaciones-dashboard' %}" class="btn btn-outline-info mb-4">Operaciones</a>
+<a href="{% url 'cobranzas-dashboard' %}" class="btn btn-outline-info mb-4">Cobranzas</a>
+{% comment %} <h2>Bienvenido, {{ request.user.first_name }}</h2>
+<a href="{% url 'logout' %}" class="btn btn-outline-danger mb-3">Cerrar sesión</a> {% endcomment %}
+
+<h4>Subir archivo (.csv) o (.xlsx)</h4>
+<form method="post" enctype="multipart/form-data">
+
+  {% csrf_token %}
+  <div class="mb-3">
+    <input type="file" name="file" accept=".csv" class="form-control" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Subir</button>
+</form>
+
+{% if error %}
+  <div class="alert alert-danger mt-3">{{ error }}</div>
+{% endif %}
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+<hr class="my-4">
+
+<h4>Dashboard</h4>
+{% include "partials/navbar.html" %}
+<form method="get" class="mb-3">
+  <div class="input-group">
+    <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por nombre, apellido, documento o vehiculo">
+    <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+  </div>
+</form>
+
+{% if page_obj %}
+  <table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Documento</th>
+      <th>Vehículo</th>
+      <th>Contrato</th>
+      <th>Ciclo</th>
+      <th>Monto</th>
+      <th>Inicio</th>
+      <th>Activo</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for client in page_obj %}
+        {% with contract=client.all_contracts.0 %}
+    <tr>
+      <td>{{ client.first_name }}</td>
+      <td>{{ client.last_name }}</td>
+      <td>{{ client.document_number }}</td>
+
+      {% if contract %}
+       <td>{{ contract.vehicle.brand }} {{ contract.vehicle.model }} - {{ contract.vehicle.plate }}</td>
+       <td>#{{ contract.id }}</td>
+       <td>{{ contract.get_billing_cycle_display }}</td>
+       <!-- <td>{{ contract.end_date|default:"—" }}</td> -->
+       <td>${{ contract.amount }}</td>
+       <td>{{ contract.start_date }}</td>
+       
+       <td>{{ contract.active|yesno:"Sí,No" }}</td>
+      {% else %}
+        <td colspan="7">Sin contrato</td>
+      {% endif %}
+    </tr>
+    {% endwith %}
+    {% empty %}
+    <tr><td colspan="10">No hay clientes registrados.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% include "partials/navbar.html" %}
+  {% comment %} <nav>
+    <ul class="pagination">
+      {% if client_page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ client_page_obj.previous_page_number }}&q={{ query }}">Anterior</a></li>
+      {% endif %}
+      <li class="page-item disabled"><span class="page-link">Página {{ client_page_obj.number }}</span></li>
+      {% if client_page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ client_page_obj.next_page_number }}&q={{ query }}">Siguiente</a></li>
+      {% endif %}
+    </ul>
+  </nav> {% endcomment %}
+
+{% endif %}
+
+{% comment %} <hr class="my-4">
+
+<h4>Vehículos registrados</h4>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Marca</th>
+      <th>Modelo</th>
+      <th>Placa</th>
+      <th>VIN</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for v in vehicle_page %}
+      <tr>
+        <td>{{ v.brand }}</td>
+        <td>{{ v.model }}</td>
+        <td>{{ v.plate }}</td>
+        <td>{{ v.vin|default:"—" }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">No se encontraron vehículos.</td></tr>
+    {% endfor %}
+  </tbody>
+</table> {% endcomment %}
+
+{% endblock %}

@@ -1,0 +1,1 @@
+* * * * * root cd /app && ./run_generate_invoices.sh manage.py generate_invoices >> /var/log/cron.log 2>&1

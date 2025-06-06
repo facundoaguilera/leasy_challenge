@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Nuevo Contrato{% endblock %}
+{% block content %}
+
+<h2>Registrar contrato</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {% for field in form %}
+    <div class="mb-3">
+      {{ field.label_tag }}
+      {{ field }}
+      {{ field.errors }}
+    </div>
+  {% endfor %}
+  <button class="btn btn-success">Guardar</button>
+  <a href="{% url 'cobranzas-dashboard' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+{% endblock %}

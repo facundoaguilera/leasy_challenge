@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Cobranzas{% endblock %}
+{% block content %}
+{% include "partials/header.html" %}
+<h2>Contratos activos</h2>
+
+<a href="{% url 'crear-contrato' %}" class="btn btn-primary mb-3">+ Nuevo Contrato</a>
+<a href="{% url 'listar-facturas' %}" class="btn btn-outline-info mb-3">Ver Facturas</a>
+<a href="{% url 'default-dashboard' %}" class="btn btn-outline-info mb-3">Inicio</a>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Cliente</th>
+      <th>Vehículo</th>
+      <th>Monto</th>
+      <th>Ciclo</th>
+      <th>Inicio</th>
+      <th>Cuotas Pendientes</th>
+      <th>Monto Pendiente</th>
+      <th>Días vencidas</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for contract in contracts %}
+    <tr>
+      <td>{{ contract.client }}</td>
+      <td>{{ contract.vehicle }}</td>
+      <td>${{ contract.amount }}</td>
+      <td>{{ contract.get_billing_cycle_display }}</td>
+      <td>{{ contract.start_date }}</td>
+      <td>{{ contract.cuotas_pendientes }}</td>
+      <td>${{ contract.monto_pendiente|default:"0.00" }}</td>
+      <td>
+          {% if contract.fecha_mas_antigua %}
+            {{ contract.dias_desde_mas_antigua }} días
+          {% else %}
+            —
+          {% endif %}
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">No hay contratos activos.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% include "partials/navbar.html"  %}
+{% endblock %}
