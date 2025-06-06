@@ -7,7 +7,7 @@ class Command(BaseCommand):
         roles = ['ventas', 'operaciones', 'cobranzas']
         admin_email = "admin@leasy.test"
         if not CustomUser.objects.filter(email= admin_email).exists():
-            admin = CustomUser.objects.create_user(
+            admin_user = CustomUser.objects.create_user(
                     email=admin_email,
                     password='admin123',
                     first_name="Admin"
@@ -16,7 +16,7 @@ class Command(BaseCommand):
         for role in roles:
             group, _ = Group.objects.get_or_create(name=role)
             email = f'{role}_user@leasy.test'
-            admin.groups.add(group)
+            admin_user.groups.add(group)
             if not CustomUser.objects.filter(email=email).exists():
                 user = CustomUser.objects.create_user(
                     email=email,
