@@ -5,10 +5,10 @@ from contracts.forms import ContractForm
 from users.mixins import RoleRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from cobranzas.services.contract_service import ContractService
 
-class CobranzasDashboardView(RoleRequiredMixin, ListView):
+class CobranzasDashboardView(LoginRequiredMixin,RoleRequiredMixin, ListView):
     model = Contract
     template_name = "cobranzas/dashboard.html"
     paginate_by = 20
@@ -19,7 +19,7 @@ class CobranzasDashboardView(RoleRequiredMixin, ListView):
         return ContractService.get_contracts_with_extra_data()
     
 
-class ContractCreateView(RoleRequiredMixin, CreateView):
+class ContractCreateView(LoginRequiredMixin,RoleRequiredMixin, CreateView):
     model = Contract
     form_class = ContractForm
     template_name = 'cobranzas/contract_form.html'
@@ -30,7 +30,7 @@ class ContractCreateView(RoleRequiredMixin, CreateView):
         messages.success(self.request, "Contrato registrado correctamente.")
         return super().form_valid(form)
 
-class InvoiceListView(RoleRequiredMixin, ListView):
+class InvoiceListView(LoginRequiredMixin,RoleRequiredMixin, ListView):
     model = Invoice
     template_name = "cobranzas/invoices.html"
     paginate_by = 20

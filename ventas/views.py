@@ -8,7 +8,9 @@ from users.mixins import RoleRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db.models import Prefetch
-class VentasDashboardView(RoleRequiredMixin, ListView):
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class VentasDashboardView(LoginRequiredMixin,RoleRequiredMixin, ListView):
     model = Client
     template_name = "ventas/dashboard.html"
     paginate_by = 20
@@ -22,7 +24,7 @@ class VentasDashboardView(RoleRequiredMixin, ListView):
         )
         return Client.objects.all().prefetch_related(active_contracts).order_by("last_name", "first_name")
 
-class ClientCreateView(RoleRequiredMixin, CreateView):
+class ClientCreateView(LoginRequiredMixin,RoleRequiredMixin, CreateView):
     model = Client
     fields = ['first_name', 'last_name', 'document_number']
     template_name = 'ventas/client_form.html'
@@ -33,7 +35,7 @@ class ClientCreateView(RoleRequiredMixin, CreateView):
         messages.success(self.request, "Cliente creado exitosamente.")
         return super().form_valid(form)
 
-class ClientUpdateView(RoleRequiredMixin, UpdateView):
+class ClientUpdateView(LoginRequiredMixin,RoleRequiredMixin, UpdateView):
     model = Client
     fields = ['first_name', 'last_name', 'document_number']
     template_name = 'ventas/client_form.html'

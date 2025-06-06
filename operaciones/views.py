@@ -13,6 +13,7 @@ from dateutil.relativedelta import relativedelta
 from operaciones.repositories.vehicle_repository import VehicleRepository
 from operaciones.services.vehicle_status_service import VehicleStatusService
 from django.db import connection
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class OperacionesDashboardView(RoleRequiredMixin, ListView):
     model = Vehicle
@@ -27,7 +28,7 @@ class OperacionesDashboardView(RoleRequiredMixin, ListView):
         # print(len(connection.queries))
         # return response
     
-class VehicleCreateView(RoleRequiredMixin, CreateView):
+class VehicleCreateView(LoginRequiredMixin,RoleRequiredMixin, CreateView):
     model = Vehicle
     fields = ['brand', 'model', 'plate', 'vin']
     template_name = 'operaciones/vehicle_form.html'
@@ -38,7 +39,7 @@ class VehicleCreateView(RoleRequiredMixin, CreateView):
         messages.success(self.request, "Vehículo registrado exitosamente.")
         return super().form_valid(form)
     
-class VehicleUpdateView(RoleRequiredMixin, UpdateView):
+class VehicleUpdateView(LoginRequiredMixin,RoleRequiredMixin, UpdateView):
     model = Vehicle
     fields = ['brand', 'model', 'plate', 'vin']
     template_name = 'operaciones/vehicle_form.html'
